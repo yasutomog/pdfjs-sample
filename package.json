@@ -1,0 +1,14 @@
+{
+  "name": "pdfjs-sample",
+  "version": "0.0.0",
+  "description": "pdf.js sample",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "author": "yasutomo.goto@gmail.com",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-webserver": "^0.9.1"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="bower_components/pdf/build/generic/build/pdf.js"></script>
+    <script src="bower_components/pdf/build/generic/build/pdf.worker.js"></script>
+    <script src="bower_components/pdf/build/generic/web/compatibility.js"></script>
+</head>
+<body>
+<div>
+    <button id="prev">prev</button>
+    <button id="next">next</button>
+</div>
+<div>
+    <canvas id="the-canvas" style="border:1px  solid black" height="300" width="300"></canvas>
+</div>
+</body>
+<script>
+
+    PDFJS.cMapUrl = "../web/cmaps/";
+    PDFJS.cMapPacked = true;
+
+    PDFJS.disableRange = false;
+    PDFJS.disableStream = false;
+    PDFJS.disableAutoFetch = false;
+
+    var url = '/pdf/compressed.tracemonkey-pldi-09.pdf';
+
+    PDFJS.disableWorker = true;
+    PDFJS.workerSrc = './bower_components/pdf/build/generic/build/pdf.worker.js';
+
+    var maxPageNum = 0,
+            currentPageNum = 0,
+            readPdf = null;
+
+
+    PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
+
+        readPdf = pdf;
+        currentPageNum = 1;
+        maxPageNum = pdf.numPages;
+        renderPdf();
+
+    }).then(null, function (error) {
+        console.log("Error occurred", error);
+    });
+
+    document.getElementById('prev').addEventListener('click', function(){
+        console.log("bbb");
+        if (currentPageNum !== 1) {
+            currentPageNum = currentPageNum - 1;
+            renderPdf();
+        }
+    });
+
+    document.getElementById('next').addEventListener('click', function(){
+        console.log("aaa");
+        if (currentPageNum < maxPageNum) {
+            currentPageNum = currentPageNum + 1;
+            renderPdf();
+        }
+    });
+
+    function renderPdf() {
+        readPdf.getPage(currentPageNum).then(function createPage(page) {
+
+            var scale = 1.5;
+            var viewport = page.getViewport(scale);
+
+            var canvas = document.getElementById('the-canvas');
+            var context = canvas.getContext('2d');
+            canvas["height"] = viewport.height;
+            canvas["width"] = viewport.width;
+
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+
+        });
+    }
+
+</script>
+</html>

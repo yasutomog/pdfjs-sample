@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <script src="bower_components/pdf/build/generic/build/pdf.js"></script>
+        <script src="bower_components/pdf/build/generic/build/pdf.worker.js"></script>
+        <script src="bower_components/pdf/build/generic/web/compatibility.js"></script>
+    </head>
+    <body>
+        <div>
+            <button id="beforeBtn">before page</button><button id="nextBtn">next page</button>
+        </div>
+        <div>
+            <canvas id="the-canvas" style="border:1px  solid black" height="300" width="300"></canvas>
+        </div>
+    </body>
+    <script>
+
+        PDFJS.cMapUrl = "../web/cmaps/";
+        PDFJS.cMapPacked = true;
+        PDFJS.disableWorker = false;
+        PDFJS.disableRange = true;
+        PDFJS.disableStream = false;
+        PDFJS.disableAutoFetch = false;
+
+        var url = '/pdf/sample.pdf';
+
+        PDFJS.getDocument(url).then(function getPdfHelloWorld(pdf) {
+
+            pdf.getPage(1).then(function createPage(page) {
+
+                var scale = 1.5;
+                var viewport = page.getViewport(scale);
+
+                var canvas = document.getElementById('the-canvas');
+                var context = canvas.getContext('2d');
+                canvas["height"] = viewport.height;
+                canvas["width"] = viewport.width;
+
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+
+            });
+
+        }).then(null, function(error){
+            console.log("Error occurred", error);
+        });
+
+    </script>
+</html>
